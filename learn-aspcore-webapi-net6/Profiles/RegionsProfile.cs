@@ -9,6 +9,7 @@ namespace learn_aspcore_webapi_net6.Profiles
         public RegionsProfile()
         {
             CreateMap<Region, RegionDto>().ReverseMap();
+            CreateMap<Region, CreateRegionDto>().ReverseMap();
         }
     }
 }

@@ -12,6 +12,29 @@ namespace learn_aspcore_webapi_net6.Repositories
         {
             _dbContext = dbContext;
         }
+
+        public async Task<Region> AddAsync(Region region)
+        {
+            region.Id = Guid.NewGuid();
+            var savedRegion = await _dbContext.AddAsync(region);
+            await _dbContext.SaveChangesAsync();
+
+            return savedRegion.Entity;
+        }
+
+        public async Task<Region?> DeleteAsync(Guid id)
+        {
+            var region = await _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+            if (region == null)
+            {
+                return null;
+            }
+
+            _dbContext.Regions.Remove(region);
+            await _dbContext.SaveChangesAsync();
+            return region;
+        }
+
         public Task<List<Region>> GetAllAsync()
         {
             return _dbContext.Regions.ToListAsync();

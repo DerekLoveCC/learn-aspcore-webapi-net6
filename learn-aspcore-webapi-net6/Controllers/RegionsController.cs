@@ -40,5 +40,29 @@ namespace learn_aspcore_webapi_net6.Controllers
             var regionDto = _mapper.Map<RegionDto>(region);
             return Ok(regionDto);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRegionAsync([FromBody] CreateRegionDto addRegionRequest)
+        {
+            var region = _mapper.Map<Region>(addRegionRequest);
+            Region savedRegion = await _regionRepository.AddAsync(region);
+            return Ok(savedRegion);
+
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteRegionAsync(Guid id)
+        {
+            var region = await _regionRepository.DeleteAsync(id);
+            if (region == null)
+            {
+                return NotFound();
+            }
+
+            var dto = _mapper.Map<RegionDto>(region);
+
+            return Ok(dto);
+        }
     }
 }
