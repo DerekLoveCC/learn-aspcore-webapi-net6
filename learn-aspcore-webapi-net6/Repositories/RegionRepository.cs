@@ -1,6 +1,7 @@
 ﻿using learn_aspcore_webapi_net6.Data;
 using learn_aspcore_webapi_net6.Models.Domains;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace learn_aspcore_webapi_net6.Repositories
 {
@@ -43,6 +44,26 @@ namespace learn_aspcore_webapi_net6.Repositories
         public Task<Region?> GetAsync(Guid id)
         {
             return _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+        }
+
+        public async Task<Region?> UpdateAsync(Guid id, Region region)
+        {
+            var existingRegion = await _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+            if (existingRegion == null)
+            {
+                return null;
+            }
+
+            existingRegion.Code = region.Code;
+            existingRegion.Name = region.Name;
+            existingRegion.Area = region.Area;
+            existingRegion.Lat = region.Lat;
+            existingRegion.Long = region.Long;
+            existingRegion.Population = region.Population;
+
+            await _dbContext.SaveChangesAsync();
+
+            return existingRegion;
         }
     }
 }
