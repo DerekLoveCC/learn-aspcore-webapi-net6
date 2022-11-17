@@ -25,7 +25,7 @@ namespace learn_aspcore_webapi_net6.Repositories
 
         public async Task<Walk?> DeleteAsync(Guid id)
         {
-            var walk = await _dbContext.Walks.FirstOrDefaultAsync(r => r.Id == id);
+            var walk = await GetAsync(id);
             if (walk == null)
             {
                 return null;
@@ -51,7 +51,7 @@ namespace learn_aspcore_webapi_net6.Repositories
 
         public async Task<Walk?> UpdateAsync(Guid id, Walk walk)
         {
-            var existingWalk = await _dbContext.Walks.FirstOrDefaultAsync(r => r.Id == id);
+            var existingWalk = await GetAsync(id);
             if (existingWalk == null)
             {
                 return null;
@@ -59,6 +59,8 @@ namespace learn_aspcore_webapi_net6.Repositories
 
             existingWalk.Length = walk.Length;
             existingWalk.Name = walk.Name;
+            existingWalk.WalkDifficultyId = walk.WalkDifficultyId;
+            existingWalk.RegionId = walk.RegionId;
 
             await _dbContext.SaveChangesAsync();
 
