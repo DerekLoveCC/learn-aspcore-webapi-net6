@@ -29,6 +29,7 @@ namespace learn_aspcore_webapi_net6.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
+        [ActionName(nameof(GetWalkAsync))]
         public async Task<IActionResult> GetWalkAsync(Guid id)
         {
             var walk = await _walksRepository.GetAsync(id);
@@ -42,11 +43,12 @@ namespace learn_aspcore_webapi_net6.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateWalkAsync(CreateWalkDto addWalkRequest)
+        public async Task<IActionResult> CreateWalkAsync(CreateWalkDto createWalkRequest)
         {
-            var walk = _mapper.Map<Walk>(addWalkRequest);
+            var walk = _mapper.Map<Walk>(createWalkRequest);
             Walk savedWalk = await _walksRepository.AddAsync(walk);
-            return Ok(savedWalk);
+            var dto = _mapper.Map<WalkDto>(walk);
+            return CreatedAtAction(nameof(GetWalkAsync), new { id = dto.Id }, dto);
         }
 
         [HttpDelete]

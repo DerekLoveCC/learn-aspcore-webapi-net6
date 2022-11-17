@@ -8,9 +8,9 @@ namespace learn_aspcore_webapi_net6.Profiles
     {
         public WalksProfile()
         {
-            CreateMap<Region, RegionDto>().ReverseMap();
-            CreateMap<Region, CreateRegionDto>().ReverseMap();
-            CreateMap<Region, UpdateRegionDto>().ReverseMap();
+            CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<Walk, CreateWalkDto>().ReverseMap();
+            CreateMap<Walk, UpdateWalkDto>().ReverseMap();
         }
     }
 }

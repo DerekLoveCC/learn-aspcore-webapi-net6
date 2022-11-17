@@ -29,6 +29,7 @@ namespace learn_aspcore_webapi_net6.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
+        [ActionName(nameof(GetRegionAsync))]
         public async Task<IActionResult> GetRegionAsync(Guid id)
         {
             var region = await _regionRepository.GetAsync(id);
@@ -42,11 +43,13 @@ namespace learn_aspcore_webapi_net6.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRegionAsync(CreateRegionDto addRegionRequest)
+        public async Task<IActionResult> CreateRegionAsync(CreateRegionDto createRegionRequest)
         {
-            var region = _mapper.Map<Region>(addRegionRequest);
+            var region = _mapper.Map<Region>(createRegionRequest);
             Region savedRegion = await _regionRepository.AddAsync(region);
-            return Ok(savedRegion);
+            var dto = _mapper.Map<RegionDto>(region);
+
+            return CreatedAtAction(nameof(GetRegionAsync), new { id = dto.Id }, dto);
 
         }
 

@@ -38,12 +38,15 @@ namespace learn_aspcore_webapi_net6.Repositories
 
         public Task<List<Walk>> GetAllAsync()
         {
-            return _dbContext.Walks.ToListAsync();
+            return _dbContext.Walks
+                .Include(w=>w.WalkDifficulty)
+                .Include(w=>w.Region).ToListAsync();
         }
 
         public Task<Walk?> GetAsync(Guid id)
         {
-            return _dbContext.Walks.FirstOrDefaultAsync(r => r.Id == id);
+            return _dbContext.Walks.Include(w => w.WalkDifficulty)
+                .Include(w => w.Region).FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public async Task<Walk?> UpdateAsync(Guid id, Walk walk)
