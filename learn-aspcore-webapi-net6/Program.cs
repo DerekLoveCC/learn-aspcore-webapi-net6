@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped(typeof(IRegionRepository), typeof(RegionRepository));
+builder.Services.AddScoped(typeof(IWalksRepository), typeof(WalksRepository));
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NZWalksDbContext>(options =>

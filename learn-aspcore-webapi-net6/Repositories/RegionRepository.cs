@@ -1,7 +1,6 @@
 ﻿using learn_aspcore_webapi_net6.Data;
 using learn_aspcore_webapi_net6.Models.Domains;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
 
 namespace learn_aspcore_webapi_net6.Repositories
 {
