@@ -45,12 +45,54 @@ namespace learn_aspcore_webapi_net6.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRegionAsync(CreateRegionDto createRegionRequest)
         {
+            if (!ValidateCreateRegionAsync(createRegionRequest))
+            {
+                return BadRequest(ModelState);
+            }
+
             var region = _mapper.Map<Region>(createRegionRequest);
             Region savedRegion = await _regionRepository.AddAsync(region);
             var dto = _mapper.Map<RegionDto>(region);
 
             return CreatedAtAction(nameof(GetRegionAsync), new { id = dto.Id }, dto);
 
+        }
+
+        private bool ValidateCreateRegionAsync(CreateRegionDto createRegionRequest)
+        {
+            if (createRegionRequest == null)
+            {
+                ModelState.AddModelError(nameof(createRegionRequest), $"add region data is required");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(createRegionRequest.Code))
+            {
+                ModelState.AddModelError(nameof(createRegionRequest.Code), $"{nameof(createRegionRequest.Code)} cannot be null or empty or white space");
+            }
+
+            if (createRegionRequest.Long <= 0)
+            {
+                ModelState.AddModelError(nameof(createRegionRequest.Long), $"{nameof(createRegionRequest.Long)} cannot be less than zero");
+            }
+
+
+            if (createRegionRequest.Lat <= 0)
+            {
+                ModelState.AddModelError(nameof(createRegionRequest.Lat), $"{nameof(createRegionRequest.Lat)} cannot be less than zero");
+            }
+
+            if (createRegionRequest.Population <= 0)
+            {
+                ModelState.AddModelError(nameof(createRegionRequest.Population), $"{nameof(createRegionRequest.Population)} cannot be less than zero");
+            }
+
+            if (createRegionRequest.Area <= 0)
+            {
+                ModelState.AddModelError(nameof(createRegionRequest.Area), $"{nameof(createRegionRequest.Area)} cannot be less than zero");
+            }
+
+            return ModelState.ErrorCount == 0;
         }
 
         [HttpDelete]
