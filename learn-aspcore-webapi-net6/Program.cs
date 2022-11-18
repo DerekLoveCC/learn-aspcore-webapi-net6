@@ -15,6 +15,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped(typeof(IRegionRepository), typeof(RegionRepository));
 builder.Services.AddScoped(typeof(IWalksRepository), typeof(WalksRepository));
+builder.Services.AddScoped(typeof(IWalkDifficultyRepository), typeof(WalkDifficultyRepository));
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NZWalksDbContext>(options =>
