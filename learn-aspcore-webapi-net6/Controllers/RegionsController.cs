@@ -2,6 +2,7 @@
 using learn_aspcore_webapi_net6.Dtos;
 using learn_aspcore_webapi_net6.Models.Domains;
 using learn_aspcore_webapi_net6.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learn_aspcore_webapi_net6.Controllers
@@ -20,6 +21,7 @@ namespace learn_aspcore_webapi_net6.Controllers
         }
 
         [HttpGet("get-all")]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetAllRegions()
         {
             var regions = await _regionRepository.GetAllAsync();
@@ -30,6 +32,7 @@ namespace learn_aspcore_webapi_net6.Controllers
         [HttpGet]
         [Route("{id:guid}")]
         [ActionName(nameof(GetRegionAsync))]
+        [Authorize(Roles = "reader")]
         public async Task<IActionResult> GetRegionAsync(Guid id)
         {
             var region = await _regionRepository.GetAsync(id);
@@ -43,6 +46,7 @@ namespace learn_aspcore_webapi_net6.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "writer")]
         public async Task<IActionResult> CreateRegionAsync(CreateRegionDto createRegionRequest)
         {
             if (!ValidateCreateRegionAsync(createRegionRequest))
@@ -55,7 +59,39 @@ namespace learn_aspcore_webapi_net6.Controllers
             var dto = _mapper.Map<RegionDto>(region);
 
             return CreatedAtAction(nameof(GetRegionAsync), new { id = dto.Id }, dto);
+        }
 
+        [HttpDelete]
+        [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
+        public async Task<IActionResult> DeleteRegionAsync(Guid id)
+        {
+            var region = await _regionRepository.DeleteAsync(id);
+            if (region == null)
+            {
+                return NotFound();
+            }
+
+            var dto = _mapper.Map<RegionDto>(region);
+
+            return Ok(dto);
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        [Authorize(Roles = "writer")]
+        public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
+        {
+            var region = _mapper.Map<Region>(updateRegionDto);
+            var updatedRegion = await _regionRepository.UpdateAsync(id, region);
+            if (updatedRegion == null)
+            {
+                return NotFound();
+            }
+
+            var dto = _mapper.Map<RegionDto>(updatedRegion);
+
+            return Ok(dto);
         }
 
         private bool ValidateCreateRegionAsync(CreateRegionDto createRegionRequest)
@@ -76,7 +112,6 @@ namespace learn_aspcore_webapi_net6.Controllers
                 ModelState.AddModelError(nameof(createRegionRequest.Long), $"{nameof(createRegionRequest.Long)} cannot be less than zero");
             }
 
-
             if (createRegionRequest.Lat <= 0)
             {
                 ModelState.AddModelError(nameof(createRegionRequest.Lat), $"{nameof(createRegionRequest.Lat)} cannot be less than zero");
@@ -93,37 +128,6 @@ namespace learn_aspcore_webapi_net6.Controllers
             }
 
             return ModelState.ErrorCount == 0;
-        }
-
-        [HttpDelete]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> DeleteRegionAsync(Guid id)
-        {
-            var region = await _regionRepository.DeleteAsync(id);
-            if (region == null)
-            {
-                return NotFound();
-            }
-
-            var dto = _mapper.Map<RegionDto>(region);
-
-            return Ok(dto);
-        }
-
-        [HttpPut]
-        [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateRegionAsync([FromRoute] Guid id, [FromBody] UpdateRegionDto updateRegionDto)
-        {
-            var region = _mapper.Map<Region>(updateRegionDto);
-            var updatedRegion = await _regionRepository.UpdateAsync(id, region);
-            if (updatedRegion == null)
-            {
-                return NotFound();
-            }
-
-            var dto = _mapper.Map<RegionDto>(updatedRegion);
-
-            return Ok(dto);
         }
     }
 }
