@@ -38,23 +38,22 @@ builder.Services.AddSwaggerGen(c =>
         Type = SecuritySchemeType.Http,
         //内容为以 bearer开头
         Scheme = "bearer",
-        BearerFormat = "JWT"
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme,
+        }
     };
 
     //把所有方法配置为增加bearer头部信息
     var securityRequirement = new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth"}
-            },
-            new string[] {}
-        }
+        { securityScheme, new string[] {} }
     };
 
     //注册到swagger中
-    c.AddSecurityDefinition("bearerAuth", securityScheme);
+    c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
     c.AddSecurityRequirement(securityRequirement);
 });
 
@@ -70,6 +69,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
+
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
