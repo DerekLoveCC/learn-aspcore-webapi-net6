@@ -14,10 +14,6 @@ namespace learn_aspcore_webapi_net6.Repositories
                 Id=Guid.NewGuid(),
                 Username="readonly@user.com",
                 Password="readonly@user",
-                Roles=new List<string>
-                {
-                    "reader"
-                }
             },
             new User
             {
@@ -27,11 +23,6 @@ namespace learn_aspcore_webapi_net6.Repositories
                 Id=Guid.NewGuid(),
                 Username="readwrite@user.com",
                 Password="readwrite@user",
-                Roles=new List<string>
-                {
-                    "reader",
-                    "writer"
-                }
             },
         };
 
